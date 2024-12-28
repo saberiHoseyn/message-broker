@@ -1,0 +1,201 @@
+﻿@page
+@using MessageBroker.Web.UI.Areas.Consumers.Pages
+@model IndexModel
+@{
+    ViewData["Title"] = "Consumers";
+}
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="pull-left page-title">Consumers</h4>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Consumers</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Queue name</th>
+                                    <th>Durable</th>
+                                    <th>Exclusive</th>
+                                    <th>Auto Delete</th>
+                                    <th>Auto Ack</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            @if (Model.ConsumerVMList.Any())
+                            {
+                                var index = 1;
+                                <tbody>
+                                    @foreach (var consumer in Model.ConsumerVMList)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@(index++)</td>
+                                            <td class="text-center">@consumer.QueueName</td>
+                                            <td class="text-center">
+                                                @if (consumer.Durable)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (consumer.Exclusive)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (consumer.AutoDelete)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td> 
+                                            <td class="text-center">
+                                                @if (consumer.AutoAck)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td>
+                                                <ul class="inline-list m-0">
+                                                    <li>
+                                                        <a class="pl-2 pr-2 fa fa-remove float-left d-flex m-0" href="#">
+                                                            Remve
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div id="row@(index)" class="row">
+                                                    <div class="m-widget1 p-x-1">
+                                                        <table width="100%">
+                                                            <thead>
+                                                                <tr class="bg-warning">
+                                                                    <th scope="col">Messages received</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="messagesList">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            }
+                            else
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="6">there is no consumer</td>
+                                    </tr>
+                                </tbody>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Create consumer</h3></div>
+            <div class="panel-body">
+                <div class=" form">
+                    <form data-ajax="true" class="cmxform form-horizontal tasi-form" id="createQueue-form" method="post" asp-area="Consumers" asp-page="Index" asp-page-handler="ReceivingMessage">
+                        <div class="form-group row " id="hostName-eformrror">
+                            <label class="control-label col-lg-2">Host Name</label>
+                            <div class="col-lg-10">
+                                <input data-focus="false" class="form-control" id="hostName-input" type="text" required="" aria-required="true" value="@Model.CreateConsumerVm.HostName" disabled>
+                                <span id="hostName-error" class="font-weight-light text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row" id="queueName-form">
+                            <label class="control-label col-lg-2">Queue name</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" id="queueName-input" type="text" aria-required="true" data-focus="false">
+                                <span class="font-weight-light text-danger" id="queueName-error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group form-label form-row pl-sm-3 tasi-form">
+                            <div class="col-12 col-lg-3 form-group row d-none" id="durable-form">
+                                <div class="ml-lg-4 pl-lg-4">
+                                    <label>Durable</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="durable-input" data-focus="false">
+                                    <span id="durable-error" class="error"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3 form-group row d-none" id="exclusive-form">
+                                <div>
+                                    <label>Exclusive</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="exclusive-input" data-focus="false">
+                                    <span class="error" id="exclusive-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3 form-group row d-none" id="autoDelete-form">
+                                <div>
+                                    <label>Auto Delete</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="autoDelete-input" data-focus="false">
+                                    <span class="error" id="autoDelete-error"></span>
+                                </div>
+                            </div> 
+                            <div class="col-12 col-lg-3 form-group row d-none" id="autoAck-form">
+                                <div>
+                                    <label>Auto Ack</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="autoAck-input" data-focus="false" checked>
+                                    <span class="error" id="autoAck-error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-10 mx-auto my-5">
+                                <button class="btn btn-block btn-success" type="submit" id="createQueue-btn">Receiving messages</button>
+                                <button class="btn btn-block btn-light" type="button" id="cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+    <script src="~/js/consumer.js" asp-append-version="true"></script>
+}

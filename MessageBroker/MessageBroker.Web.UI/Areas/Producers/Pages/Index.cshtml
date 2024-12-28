@@ -1,0 +1,192 @@
+﻿@page
+@using MessageBroker.Web.UI.Areas.Producers.Pages
+@model IndexModel
+@{
+    ViewData["Title"] = "Producers";
+
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="pull-left page-title">Producers</h4>
+    </div>
+</div>
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <input type="hidden" value="@Model.Message" id="message" />
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Queues</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Queue name</th>
+                                    <th>Durable</th>
+                                    <th>Exclusive</th>
+                                    <th>Auto delete</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            @if (Model.QueueuList.Any())
+                            {
+                                var index = 1;
+                                <tbody>
+                                    @foreach (var queue in Model.QueueuList)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@(index++)</td>
+                                            <td class="text-center">@queue.QueueName</td>
+                                            <td class="text-center">
+                                                @if (queue.Durable)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (queue.Exclusive)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (queue.AutoDelete)
+                                                {
+                                                    <i class="bi bi-check d-flex fa-2x justify-content-center text-success"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x d-flex fa-2x justify-content-center text-danger"></i>
+                                                }
+                                            </td>
+                                            <td>
+                                                <ul class="inline-list m-0">
+                                                    <li>
+                                                        <a class="pl-2 pr-2 fa fa-remove float-left d-flex m-0" href="#">
+                                                            Remve
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            }
+                            else
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="6">there is no queue</td>
+                                    </tr>
+                                </tbody>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Create queue</h3></div>
+            <div class="panel-body">
+                <div class=" form">
+                    <form data-ajax="true" class="cmxform form-horizontal tasi-form" id="createQueue-form" method="post" asp-area="Producers" asp-page="Index" asp-page-handler="SendMessage">
+                        <div class="form-group row " id="hostName-eformrror">
+                            <label class="control-label col-lg-2">Host name</label>
+                            <div class="col-lg-10">
+                                <input data-focus="false" class="form-control" id="hostName-input" type="text" required="" aria-required="true" value="@Model.CreateQueueVm.HostName" disabled>
+                                <span id="hostName-error" class="font-weight-light text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row " id="selectedExchange-form">
+                            <label class="control-label col-lg-2">Exchange type</label>
+                            <div class="col-lg-10">
+                                <select id="selectedExchange-input" class="form-control m-input required-input" asp-items="Model?.ExchangeTypeList" data-focus="false">
+                                    <option value="0" disabled selected>choose one . . .</option>
+                                </select>
+                                <span class="font-weight-light text-danger" id="selectedExchange-error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row d-none" id="queueName-form">
+                            <label class="control-label col-lg-2">Queue name</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" id="queueName-input" type="text" aria-required="true" data-focus="false">
+                                <span class="font-weight-light text-danger" id="queueName-error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row d-none" id="routingKey-form">
+                            <label class="control-label col-lg-2">Routing key</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" id="routingKey-input" type="text" aria-required="true" data-focus="false">
+                                <span class="font-weight-light text-danger" id="routingKey-error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group form-label form-row pl-sm-3 tasi-form">
+                            <div class="col-12 col-lg-4 form-group row d-none" id="durable-form">
+                                <div class="ml-lg-4 pl-lg-4">
+                                    <label>Durable</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="durable-input" data-focus="false">
+                                    <span id="durable-error" class="error"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 form-group row d-none" id="exclusive-form">
+                                <div>
+                                    <label>Exclusive</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="exclusive-input" data-focus="false">
+                                    <span class="error" id="exclusive-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 form-group row d-none" id="autoDelete-form">
+                                <div>
+                                    <label >Auto delete</label>
+                                    <input type="checkbox" style="width: 25px;height: 20px;" class="ml-2" id="autoDelete-input" data-focus="false">
+                                    <span class="error" id="autoDelete-error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row d-none" id="messageBody-form">
+                            <label class="control-label col-lg-2">Message body</label>
+                            <div class="col-lg-10">
+                                <span class="font-weight-light text-danger" id="messageBody-error"></span>
+                                <textarea class="form-control " id="messageBody-input" aria-required="true" data-focus="false"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-10 mx-auto my-5">
+                                <button class="btn btn-block btn-success" type="submit" id="createQueue-btn">Send message</button>
+                                <button class="btn btn-block btn-light" type="button" id="cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/producer.js" asp-append-version="true"></script>
+}

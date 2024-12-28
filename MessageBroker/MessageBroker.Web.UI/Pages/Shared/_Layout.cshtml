@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Message Broker</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/vendors.css">
+    <link rel="stylesheet" href="~/MessageBroker.Web.UI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link href="~/css/CKeditor.css" rel="stylesheet" />
+    <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <header>
+        <nav id="navigation" class="navbar navbar-expand-sm bg-primary navbar-dark border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul id="menu" class="navbar-nav">
+                        <li class="nav-item h4 active" id="producers-menu">
+                            <a class="nav-link" asp-area="Producers" asp-page="/Index">Producer</a>
+                        </li>
+                        <li class="nav-item h4" id="consumers-menu">
+                            <a class="nav-link" asp-area="Consumers" asp-page="/Index">Consumer</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Message Broker
+        </div>
+    </footer>
+
+    <div id="MainModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-body modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content overflow-auto" id="ModalContent">
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/ckeditor5-build-classic/ckeditor.js"></script>
+    @* <script src="~/js/nav.js"></script> *@
+    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script asp-append-version="true" src="~/lib\toastr\customizedtoastr.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
